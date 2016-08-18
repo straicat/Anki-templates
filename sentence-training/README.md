@@ -4,9 +4,9 @@
 
 > 预览
 
-![](https://github.com/wenjianmuran/Anki-templates/tree/master/sentence-training/img/card.jpg)
+![](https://github.com/wenjianmuran/Anki-templates/raw/master/sentence-training/img/card.jpg)
 
-![](https://github.com/wenjianmuran/Anki-templates/tree/master/sentence-training/img/preview.jpg)
+![](https://github.com/wenjianmuran/Anki-templates/raw/master/sentence-training/img/preview.jpg)
 
 可自定义挖空率（0~100），若不填默认为100；
 需要挖空的部分用{ }括起来，注意是半角的大括号；
