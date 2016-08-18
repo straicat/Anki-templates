@@ -1,0 +1,133 @@
+{{#音频}}
+<div style="display: none">{{音频}}</div>
+{{/音频}}
+<div class="test">
+	<div class="translation">
+		{{text:翻译}}
+	</div>
+	<div class="sentence" id="sentence-area">{{text:句子}}</div>
+</div>
+
+{{#挖空率}}
+<script type="text/javascript">
+    var rate = parseInt("{{text:挖空率}}");
+</script>
+{{/挖空率}}
+{{^挖空率}}
+<script type="text/javascript">
+    var rate = 100;
+</script>
+{{/挖空率}}
+
+<script type="text/javascript">
+    // generate html
+    var sentence = document.getElementById("sentence-area").innerHTML;
+    if(sentence.search(/{/) === -1 && sentence.search(/}/) === -1) {
+        sentence = "{" + sentence + "}";
+    }
+
+    var collect = false;
+    var str = "";
+    var s_arr = [];
+    var blank_count = 0;
+    for (var i = 0; i < sentence.length; i++) {
+        if (sentence[i] === "{") {
+            collect = true;
+            continue;
+        }
+
+        if (sentence[i].search(/[a-zA-Z-']/) !== -1) {
+            str += sentence[i];
+            continue;
+        } else if (str !== "") {
+            if (collect) {
+                s_arr.push([str]);
+                blank_count++;
+            } else {
+                s_arr.push(str);
+            }
+            str = "";
+        }
+
+        if (sentence[i] === "}") {
+            collect = false;
+        } else {
+            s_arr.push(sentence[i]);
+        }
+    }
+
+    Array.prototype.shuffle = function () {
+        var input = this;
+        for (var i = input.length - 1; i >= 0; i--) {
+            var randomIndex = Math.floor(Math.random() * (i + 1));
+            var itemAtIndex = input[randomIndex];
+            input[randomIndex] = input[i];
+            input[i] = itemAtIndex;
+        }
+        return input;
+    };
+    var tmp = [];
+    for (var i = 0; i < blank_count; i++) {
+        tmp.push(i);
+    }
+    tmp.shuffle();
+    tmp.length = Math.round(tmp.length * rate / 100);
+
+    blank_count = 0;
+    s_arr = s_arr.map(function (o) {
+        if (Object.prototype.toString.call(o) === "[object Array]") {
+            tmp.forEach(function (n) {
+                if (n === blank_count) {
+                    var w = 20 + o[0].length * 15;
+                    o = '<input type="text" class="answer-box" style="width:' + w + 'px" data="' + o[0] + '"/> ';
+                }
+            })
+            if (Object.prototype.toString.call(o) === "[object Array]") {
+                o = o[0];
+            }
+            blank_count++;
+        }
+        return o;
+    })
+
+    document.getElementById("sentence-area").innerHTML = s_arr.join("");
+
+    // focus first blank
+    ipts = document.getElementById("sentence-area").getElementsByTagName("input")
+    if (ipts !== []) {
+        ipts[0].focus();
+    }
+
+    // auto check
+    [].forEach.call(document.querySelectorAll(".answer-box"),
+        function (ab) {
+            ab.addEventListener("keyup",
+                function () {
+
+                    // check answer
+                    if (this.getAttribute("data").toLowerCase().search(new RegExp("^" + this.value.toLowerCase())) === -1) {
+                        this.className = "answer-box wrong-answer";
+                    } else if (this.value.toLowerCase() === this.getAttribute("data").toLowerCase()) {
+                        this.className = "answer-box right-answer";
+                        this.value = this.getAttribute("data");
+                        switch_input();
+                    } else {
+                        this.className = "answer-box";
+                    }
+                });
+            }
+    );
+
+    // switch input
+    function switch_input() {
+        ipts = document.getElementById("sentence-area").getElementsByTagName("input")
+        for (var i = 0; i < ipts.length; i++) {
+            if (document.activeElement === ipts[i]) {
+                if (i < ipts.length - 1) {
+                    ipts[i + 1].focus();
+                    break;
+                }
+            }
+        }
+    }
+</script>

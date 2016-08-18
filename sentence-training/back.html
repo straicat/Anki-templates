@@ -1,0 +1,19 @@
+{{#音频}}
+<div style="display: none">{{音频}}</div>
+{{/音频}}
+<div class="test">
+	<div class="translation">
+		{{text:翻译}}
+	</div>
+	<div class="sentence" id="sentence-area">{{text:句子}}</div>
+</div>
+{{#笔记}}
+<hr>
+<div class="note">{{笔记}}</div>
+{{/笔记}}
+
+<script type="text/javascript">
+	var sentence = document.getElementById("sentence-area").innerHTML;
+	document.getElementById("sentence-area").innerHTML = sentence
+	.replace(/\(|\)/g, "");
+</script>
