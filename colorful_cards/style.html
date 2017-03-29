@@ -1,0 +1,235 @@
+.card {
+    font-family: arial;
+    font-size: 18px;
+    color: black;
+    text-align: left;
+    background-color: white;
+    line-height: 150%;
+}
+
+.deck-msg {
+    font-size: 12px;
+    line-height: 100%;
+    padding-bottom: 5px;
+}
+/*文字颜色与背景颜色*/
+.red {
+    color:#FF0000;
+}
+.red-bg {
+    background-color: #FF5555;
+}
+.green {
+    color: #37BC08;
+}
+.green-bg {
+    background-color: #98F975;
+}
+.blue {
+    color: #0000FF;
+}
+.blue-bg {
+    background-color: #758EFF;
+}
+.cyan {
+    color: #15C8C5;
+}
+.cyan-bg {
+    background-color: #6EF7F3;
+}
+.magenta {
+    color: #E4007F;
+}
+.magenta-bg {
+    background-color: #FC84C7;
+}
+.yellow {
+    color: #D6D836;
+}
+.yellow-bg {
+    background-color: #FFFF00;
+}
+.black {
+    color: #000000;
+}
+.black-bg {
+    background-color: #000000;
+}
+.white {
+    color: #FFFFFF;
+}
+.white-bg {
+    color: #FFFFFF;
+}
+.orange {
+    color: #E4AF14;
+}
+.orange-bg {
+    background-color: #FFC92D;
+}
+.pink {
+    color: #FA5B5B;
+}
+.pink-bg {
+    background-color: #FFABAB;
+}
+.gray {
+    color: #808080;
+}
+.gray-bg {
+    background-color: #D3D3D3;
+}
+.purple {
+    color: #DD02FF;
+}
+.purple-bg {
+    background-color: #FC8DFF;
+}
+
+/*下划线*/
+.underline {
+    border-bottom: 1px solid #000000;
+}
+/*双下划线*/
+.underline-double {
+    border-bottom: 3px double #000000;
+}
+/*删除线*/
+.delete-text {
+    text-decoration: line-through;
+}
+/*外框*/
+.frame {
+    border-style: solid;
+    border-width:1px;
+    border-color: black;
+}
+
+/*加粗*/
+.fat {
+    font-weight: bold;
+}
+/*小号字体*/
+.small {
+    font-size: 12px;
+}
+/*大号字体*/
+.huge {
+    font-size: 30px;
+}
+/*斜体*/
+.italic {
+    font-style: italic;
+}
+
+/*隐藏*/
+.hide {
+    display: none;
+}
+/*无效果*/
+.none {
+
+}
+</style>
+
+<script type="text/javascript">
+//设置标记与样式映射
+token_map = {
+    r:'red',
+    R:'red-bg',
+    g:'green',
+    G:'green-bg',
+    b:'blue',
+    B:'blue-bg',
+    c:'cyan',
+    C:'cyan-bg',
+    m:'magenta',
+    M:'magenta-bg',
+    y:'yellow',
+    Y:'yellow-bg',
+    k:'black',
+    K:'black-bg',
+    w:'white',
+    W:'white-bg',
+    o:'orange',
+    O:'orange-bg',
+    p:'pink',
+    P:'pink-bg',
+    a:'gray',
+    A:'gray-bg',
+    z:'purple',
+    Z:'purple-bg',
+
+    u:'underline',
+    U:'underline-double',
+    d:'delete-text',
+    F:'frame',
+
+    f:'fat',
+    s:'small',
+    h:'huge',
+    i:'italic',
+
+    H:'hide',
+    n:'none',
+};
+
+function tokenClass(tokens) {
+    tokens = tokens.replace(/\//g, '');
+    theme.split(';').forEach(function(change_group) {
+        if(tokens === change_group.split(',')[0]) {
+            tokens = change_group.split(',')[1];
+        }
+    });
+    return tokens.match(/\w/g).map(function(token) {
+        return token_map[token] || '';
+    });
+}
+
+function formatText(id) {
+    document.getElementById(id).innerHTML =
+    document.getElementById(id).innerHTML
+    .replace(/<br *\/?>/g, '<br>')
+    .replace(/<div>/g, '')
+    .replace(/<\/div>/g, '<br>')
+    .replace(/([a-zA-Z]+)\//g, function(tokens){
+        return '<span class="'+
+        tokenClass(tokens).join(' ')
+        +'">'
+    })
+    .replace(/[^/]?\//g, function(str) {
+        if(str === '\\\/') {
+            return '/';
+        }else{
+            return str.replace(/\//g, '</span>');
+        }
+    })
+    theme.split(';').forEach(function(change_group) {
+        if(change_group.match(/\[\w+\]/)) {
+            document.getElementById(id).className = tokenClass(change_group.match(/\w+/)[0]).join(' ');
+        }
+    });
+}
+
+function hideElement(id, hide_mode) {
+    hide_mode.match(/\w/g).map(function(token) {
+        return tokenClass(token);
+    }).forEach(function(classes) {
+        [].forEach.call(document.getElementById(id).getElementsByTagName('span'), function(span_element) {
+            span_element.getAttribute('class').split(/ +/)
+            .forEach(function(span_class) {
+                if(classes.indexOf(span_class) !== -1) {
+                    span_element.setAttribute('style', 'border-bottom: 1px solid ' +
+                        window.getComputedStyle(document.getElementById(id)).color +
+                        '; color: rgba(0, 0, 0, 0)');
+                    span_element.addEventListener('click', function() {
+                        span_element.removeAttribute('style');
+                    });
+                }
+            });
+        });
+    });
+}
+</script>
+
+<style>
